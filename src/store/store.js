@@ -1,19 +1,17 @@
-import { combineReducers, createStore } from "redux";
-
-
+import { combineReducers, createStore } from 'redux';
 
 // redux-persist
-import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import userReducer from './../reducers/usersReducers';
 
 const rootReducer = combineReducers({
-  usersList: userReducer,
+  data: userReducer,
 });
 
 const persistedReducer = persistReducer(
   {
-    key: "SPLIT_WITH_FRIENDZZ",
+    key: 'SPLIT_WITH_FRIENDZZ',
     storage,
   },
   rootReducer

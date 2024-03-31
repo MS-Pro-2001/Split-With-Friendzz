@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
+  'border': `1px solid ${theme.palette.divider}`,
   '&:not(:last-child)': {
     borderBottom: 0,
   },
@@ -24,11 +24,11 @@ const AccordionSummary = styled((props) => (
     {...props}
   />
 ))(({ theme }) => ({
-  backgroundColor:
+  'backgroundColor':
     theme.palette.mode === 'dark'
       ? 'rgba(255, 255, 255, .05)'
       : 'rgba(0, 0, 0, .03)',
-  flexDirection: 'row-reverse',
+  'flexDirection': 'row-reverse',
   '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
     transform: 'rotate(90deg)',
   },
@@ -40,11 +40,12 @@ const AccordionSummary = styled((props) => (
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: '1px solid rgba(0, 0, 0, .125)',
-  width:'300px'
+  width: '300px',
 }));
 
 // eslint-disable-next-line react/prop-types
-export default function CustomAccordion({memberName="",expense=[]}) {
+export default function CustomAccordion({ member = {}, expenseList = [] }) {
+  console.log({ expenseList });
   const [expanded, setExpanded] = React.useState('panel1');
 
   const handleChange = (panel) => (event, newExpanded) => {
@@ -53,18 +54,19 @@ export default function CustomAccordion({memberName="",expense=[]}) {
 
   return (
     <div>
-      <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+      <Accordion
+        expanded={expanded === 'panel1'}
+        onChange={handleChange('panel1')}
+      >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography>{memberName || "Member Name"}</Typography>
+          <Typography>{member.name || 'Member Name'}</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-          {expense || "expenses"}
+            {expenseList.map((expense) => expense.description)} :
           </Typography>
         </AccordionDetails>
       </Accordion>
-     
-      
     </div>
   );
 }

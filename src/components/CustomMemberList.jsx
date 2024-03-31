@@ -12,7 +12,7 @@ import { useState } from 'react';
 
 export default function CustomMemberList({
   handleDeleteUser,
-  membersList,
+  membersList = [],
   actionType = 'check',
   selectionType = 'multiple',
   addExpensePayload,
@@ -24,7 +24,7 @@ export default function CustomMemberList({
         dense
         sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
       >
-        {membersList.map((user, index) => {
+        {membersList?.map((user, index) => {
           const labelId = `checkbox-list-secondary-label-${index}`;
           return (
             <ListItem
@@ -85,7 +85,7 @@ export default function CustomMemberList({
           <ListItemText id={'all'} primary={`Delete All`} />
         </ListItemButton>
       </ListItem> */}
-      {membersList.map((user, index) => {
+      {membersList?.map((user, index) => {
         const labelId = `checkbox-list-secondary-label-${index}`;
         return (
           <>

@@ -1,44 +1,47 @@
-import {
-  Button,
-  Container,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, Container, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CustomMemberSelectionModal from '../components/CustomMemberSelectionModal';
 import { getUniqueId } from './../../utils/helperFunctions';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DescriptionIcon from '@mui/icons-material/Description';
+import { useForm } from 'react-hook-form';
+import CustomAccordion from '../components/CustomAccordion';
+import { addExpense } from '../slices/userSlice';
 
 const AddExpensePage = () => {
-  const membersList = useSelector((state) => state.usersList.data);
+  const membersList = useSelector((state) => state.data.membersData);
+  const expenseList = useSelector((state) => state.data.expenseData);
+
+  const dispatch = useDispatch();
   const [listSelectionType, setListSelectionType] = useState('multiple');
 
+  const {
+    register,
+    handleSubmit,
+    resetField,
+    formState: { errors },
+  } = useForm();
+
   const [addExpensePayload, setAddExpensePayload] = useState({
-    _id: getUniqueId(),
-    description: '',
-    price: '',
-    paidBy: membersList[0].name,
-    splitBetween: membersList,
+    // description: '',
+    // price: '',
+    paidBy: membersList[0]?.name || '',
+    splitBetween: membersList || [],
   });
 
   const [open, setOpen] = useState(false);
 
-  const handleChange = (e) => {
-    setAddExpensePayload({
+  const onSubmit = (data) => {
+    const payload = {
+      _id: getUniqueId(),
+      ...data,
       ...addExpensePayload,
-      [e.target.name]: e.target.value,
-    });
-  };
+    };
 
-  const onSubmit = () => {
-    console.log({ addExpensePayload });
+    dispatch(addExpense(payload));
+    resetField('description');
+    resetField('price');
   };
 
   return (
@@ -54,6 +57,9 @@ const AddExpensePage = () => {
           gap: 2,
           my: 5,
         }}
+        component="form"
+        id="expenseForm"
+        onSubmit={handleSubmit(onSubmit)}
       >
         <Container
           sx={{
@@ -68,8 +74,11 @@ const AddExpensePage = () => {
             label="Enter a description"
             variant="standard"
             name="description"
-            value={addExpensePayload.description}
-            onChange={handleChange}
+            // value={addExpensePayload.description}
+            // onChange={handleChange}
+            {...register('description', { required: true })}
+            error={!!errors.description}
+            helperText={!!errors.description && 'Please enter a description'}
 
             // helperText="Please select your currency"
           />
@@ -90,7 +99,10 @@ const AddExpensePage = () => {
             variant="standard"
             name="price"
             type="number"
-            onChange={handleChange}
+            // onChange={handleChange}
+            {...register('price', { required: true })}
+            error={!!errors.price}
+            helperText={!!errors.price && 'Please enter a price'}
 
             // helperText="Please select your currency"
           />
@@ -129,7 +141,9 @@ const AddExpensePage = () => {
       <Button
         sx={{ my: 4, width: '300px' }}
         variant="contained"
-        onClick={onSubmit}
+        // onClick={onSubmit}
+        type="submit"
+        form="expenseForm"
       >
         Add
       </Button>
@@ -143,6 +157,15 @@ const AddExpensePage = () => {
           setAddExpensePayload={setAddExpensePayload}
         />
       )}
+      {membersList.map((member) => {
+        return (
+          <CustomAccordion
+            key={member._id}
+            member={member}
+            expenseList={expenseList}
+          />
+        );
+      })}
     </>
   );
 };

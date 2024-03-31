@@ -1,21 +1,22 @@
 /* eslint-disable react/prop-types */
-import {
-  Button,
-  Container,
-  Grid,
-  TextField,
-  Typography,
-  scopedCssBaselineClasses,
-} from '@mui/material';
-import { useState } from 'react';
+import { Button, Container, Grid, TextField, Typography } from '@mui/material';
 import CustomMemberList from '../components/CustomMemberList';
 import { useDispatch, useSelector } from 'react-redux';
 import { addUser, deleteUser } from './../slices/userSlice';
 import { getUniqueId } from '../../utils/helperFunctions';
 import { Link } from 'react-router-dom';
 
+import { useForm } from 'react-hook-form';
+
 const HomePage = () => {
-  const membersList = useSelector((state) => state.usersList.data);
+  const membersList = useSelector((state) => state.data.membersData);
+
+  const {
+    register,
+    handleSubmit,
+    resetField,
+    formState: { errors },
+  } = useForm();
 
   const dispatch = useDispatch();
 
@@ -23,20 +24,19 @@ const HomePage = () => {
     dispatch(deleteUser(userId));
   };
 
-  const [memberName, setMemberName] = useState('');
+  // const addMember = () => {};
+  // const handleDeleteAll = () => {
+  //   console.log('All members deleted');
+  // };
 
-  const addMember = () => {
+  const onSubmit = (data) => {
     const user = {
       _id: getUniqueId(),
-      name: memberName,
+      name: data.name,
     };
     dispatch(addUser(user));
 
-    setMemberName('');
-  };
-
-  const handleDeleteAll = () => {
-    console.log('All members deleted');
+    resetField('name');
   };
   return (
     <>
@@ -53,21 +53,26 @@ const HomePage = () => {
           display: 'flex',
           alignItems: 'center',
         }}
+        component="form"
+        onSubmit={handleSubmit(onSubmit)}
       >
         <Grid item lg={4.5} md={4} sm={3} xs={0}></Grid>
         <Grid item lg={2} md={3} sm={4} xs={8}>
           <TextField
-            value={memberName}
-            onChange={(e) => setMemberName(e.target.value)}
             variant="outlined"
             label="Enter member name"
+            {...register('name', {
+              required: { value: true },
+            })}
+            error={!!errors.name}
+            helperText={!!errors.name && 'Please enter a name '}
           />
         </Grid>
         <Grid item lg={2} md={2} sm={2} xs={1}>
           <Button
-            onClick={addMember}
             sx={{ ml: 5, minWidth: '80px' }}
             variant="contained"
+            type="submit"
           >
             + Add
           </Button>
@@ -75,9 +80,9 @@ const HomePage = () => {
         <Grid item lg={4} md={4} sm={4} xs={1}></Grid>
       </Grid>
 
-      {membersList.length > 1 && (
+      {membersList?.length > 1 && (
         <Button
-          onClick={handleDeleteAll}
+          // onClick={handleDeleteAll}
           sx={{ mt: 3, mb: -3 }}
           variant="outlined"
         >
@@ -85,7 +90,7 @@ const HomePage = () => {
         </Button>
       )}
 
-      {membersList.length !== 0 && (
+      {membersList?.length !== 0 && (
         <>
           <Container
             sx={{
