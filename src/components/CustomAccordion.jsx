@@ -5,6 +5,7 @@ import MuiAccordion from '@mui/material/Accordion';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
+import CustomizedTreeView from './CustomizedTreeView';
 
 const Accordion = styled((props) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -38,9 +39,9 @@ const AccordionSummary = styled((props) => (
 }));
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: '1px solid rgba(0, 0, 0, .125)',
-  width: '300px',
+  padding: theme.spacing(3),
+  // borderTop: '1px solid rgba(0, 0, 0, .125)',
+  width: '400px',
 }));
 
 // eslint-disable-next-line react/prop-types
@@ -62,9 +63,19 @@ export default function CustomAccordion({ member = {}, expenseList = [] }) {
           <Typography>{member.name || 'Member Name'}</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            {expenseList.map((expense) => expense.description)} :
-          </Typography>
+          {expenseList.map((expense) => {
+            return (
+              <>
+                {expense.users[member.name] && (
+                  <CustomizedTreeView
+                    key={expense._id}
+                    expense={expense}
+                    name={member.name}
+                  />
+                )}
+              </>
+            );
+          })}
         </AccordionDetails>
       </Accordion>
     </div>

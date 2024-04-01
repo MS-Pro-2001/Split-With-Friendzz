@@ -18,6 +18,22 @@ export default function CustomMemberList({
   addExpensePayload,
   setAddExpensePayload,
 }) {
+  // const [checked, setChecked] = useState([...membersList]);
+  console.log({ addExpensePayload });
+  const handleToggle = (value) => () => {
+    const currentIndex = addExpensePayload.splitBetween?.indexOf(value);
+    const newChecked = [...addExpensePayload.splitBetween];
+    console.log({ currentIndex });
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setAddExpensePayload({ ...addExpensePayload, splitBetween: newChecked });
+  };
+
   if (selectionType === 'single') {
     return (
       <List
@@ -101,9 +117,11 @@ export default function CustomMemberList({
                 ) : (
                   <Checkbox
                     edge="end"
-                    // onChange={handleToggle(index)}
-                    // checked={checked.indexOf(index) !== -1}
-                    // inputProps={{ 'aria-labelledby': labelId }}
+                    onChange={handleToggle(user)}
+                    checked={
+                      addExpensePayload.splitBetween?.indexOf(user) !== -1
+                    }
+                    disabled={user.name === addExpensePayload.paidBy}
                   />
                 )
               }

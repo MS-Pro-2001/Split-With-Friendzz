@@ -45,7 +45,7 @@ const userReducer = (state = initialState, action) => {
         expenseDescription
       );
 
-      return { ...state, expenseData: [result, ...state.expenseData] };
+      return { ...state, expenseData: [...state.expenseData, result] };
     default:
       return state;
   }
@@ -61,14 +61,16 @@ function splitWithFriends(
   expenseDescription
 ) {
   const totalUsers = users.length;
+  console.log({ totalUsers });
   const amountPerPerson = totalAmount / totalUsers;
+  console.log({ amountPerPerson });
 
   // Initialize the users object for this expense
   const usersObj = {};
   users.forEach((userName) => {
     if (userName !== paidBy) {
-      usersObj[paidBy] = { 'dena hain': [], 'lena hain': [] };
-      usersObj[userName] = { 'dena hain': [], 'lena hain': [] };
+      usersObj[paidBy] = { dena_hain: [], lena_hain: [] };
+      usersObj[userName] = { dena_hain: [], lena_hain: [] };
     }
   });
 
@@ -76,11 +78,11 @@ function splitWithFriends(
   users.forEach((userName) => {
     if (userName !== paidBy) {
       const amountOwed = amountPerPerson;
-      usersObj[paidBy]['lena hain'].push({
+      usersObj[paidBy]['lena_hain'].push({
         username: userName,
         amount: amountOwed,
       });
-      usersObj[userName]['dena hain'].push({
+      usersObj[userName]['dena_hain'].push({
         username: paidBy,
         amount: amountOwed,
       });

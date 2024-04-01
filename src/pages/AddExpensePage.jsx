@@ -30,6 +30,8 @@ const AddExpensePage = () => {
     splitBetween: membersList || [],
   });
 
+  console.log({ a: addExpensePayload.splitBetween });
+
   const [open, setOpen] = useState(false);
 
   const onSubmit = (data) => {
